@@ -1,165 +1,290 @@
-# Phase 3 Project — Single-Script Active Record CLI
+# QuestCLI
 
-## Learning Goals
+QuestCLI is a Ruby command-line application built with **Active Record** and **SQLite3** that allows players to create an adventurer, accept quests, complete objectives, earn experience, and level up.
 
-- Build a database-backed Ruby application using Active Record
-- Design and interact with data models using object-oriented Ruby
-- Implement a multi-class CLI frontend
-- Practice working with migrations, associations, and validations
+Designed as an RPG-inspired quest manager, QuestCLI demonstrates object-oriented programming principles, database design, Active Record associations, validations, and full CRUD functionality through an interactive command-line interface.
 
-## Introduction
+---
 
-Congrats on getting through all the material for Phase 3! You've learned how to work with databases, design models with Active Record, and write object-oriented Ruby. Now it's time to bring those skills together into a full project.
+# Features
 
-This project will focus on building a Ruby command-line application that reads from and writes to a local SQLite3 database using Active Record — no web server required.
+## Adventurer Management
 
-By the end of the project, you'll have a functioning CLI that lets users interact with your data by creating, viewing, updating, and deleting records from the terminal.
+- Create adventurers
+- View all adventurers
+- View individual adventurer details
+- Update adventurer information
+- Delete adventurers
 
-## Requirements
+## Quest Management
 
-### Models
+- Accept new quests
+- View all quests
+- View active quests
+- View completed quests
+- Update quest information
+- Complete quests
+- Abandon quests
 
-- At least two model classes using `ActiveRecord::Base`
-- A one-to-many relationship (`has_many` / `belongs_to`)
-- At least one model with validations
-- Display associated data where appropriate (e.g. listing a parent record's associated children)
+## Progression System
 
-### CLI
+- Earn experience by completing quests
+- Automatic level progression
+- Prevent duplicate quest rewards
+- Track active and completed quests
 
-- At least two Ruby classes (e.g. a `Menu` class and a model-specific helper)
-- A loop or menu interface
-- Ability to create, view, update, and delete records
-- Update prompts should display the current value before asking for a new one
+---
 
-## Planning
+# Domain Model
 
-- Plan out your features
-- Develop user stories
-  - "As [ a user ], I want [ to perform this action ] so that [ I can accomplish this goal ]."
-  - Features should not need you there to explain them to users
-  - Create a `user-stories.md` file and add your user stories there
+QuestCLI contains two Active Record models with a one-to-many relationship.
 
-## Project Pitches
+- A **Player** has many **Quests**
+- A **Quest** belongs to one **Player**
 
-Before you start working on your project, you'll pitch your project idea to your instructors for approval and feedback.
+```text
+Player
+------
+id
+name
+level
+current_xp
 
-For your project pitch, you should include:
+        1
+        │
+        │ has many
+        ▼
 
-- The basic story of your application
-- The core features of your MVP
-- The data you plan to persist and how you will structure it
-- Challenges you expect to face
-- How you are meeting the requirements of the project
+Quest
+------
+id
+title
+description
+difficulty
+xp_reward
+completed
+player_id
+```
 
-**MVP ASAP** — Focus on getting your minimum viable product working first!
+---
 
-## Example Project Domains
+# Technologies
 
-You could build a **Book Tracker** app:
+- Ruby
+- Active Record
+- SQLite3
+- Rake
 
-- `Author` has many `Books`
-- Users can:
-  - Create a new book
-  - List all books
-  - Update book details
-  - Delete a book
-  - View books by a specific author
+---
 
-Or a **Workout Log**:
+# Installation
 
-- `WorkoutSession` has many `Exercises`
-- Users can:
-  - Log a new workout
-  - Add exercises
-  - Update reps/weights
-  - View or delete past workouts
+Clone the repository.
 
-## Getting Started
+```bash
+git clone <repository-url>
+```
 
-**Fork and clone** this repository to get started.
+Navigate into the project.
 
-Install dependencies:
+```bash
+cd questcli
+```
+
+Install dependencies.
 
 ```bash
 bundle install
 ```
 
-Create and migrate the database:
+Create the database.
 
 ```bash
 bundle exec rake db:create
+```
+
+Run the migrations.
+
+```bash
 bundle exec rake db:migrate
 ```
 
-Optionally seed the database with starter data:
+(Optional) Seed the database.
 
 ```bash
 bundle exec rake seed
 ```
 
-Run your CLI application:
+Start the application.
 
 ```bash
 ruby cli/main.rb
 ```
 
-## Other Useful Commands
+---
 
-Open a Pry console with your models loaded:
+# Example Gameplay
 
-```bash
-bundle exec rake console
+```text
+========================
+      QUESTCLI
+========================
+
+1. Manage Players
+2. Manage Quests
+3. View Quest Log
+4. Exit
 ```
 
-Generate a new migration:
+Accepting a quest:
 
-```bash
-bundle exec rake db:create_migration NAME=create_books
+```text
+⚔ Quest Accepted!
+
+Quest:
+Recover the Ancient Relic
+
+Difficulty:
+Medium
+
+Reward:
+250 XP
+
+Status:
+Active
 ```
 
-## Project Structure
+Completing a quest:
 
-```
-├── app/
-│   └── models/         # Your Active Record model classes go here
-├── cli/
-│   └── main.rb         # Entry point — your CLI menu lives here
-├── config/
-│   └── environment.rb  # Loads gems, DB connection, and models
-├── db/
-│   ├── config.yml      # Database connection settings
-│   ├── migrate/        # Migration files
-│   └── seeds.rb        # Seed data
-└── spec/               # RSpec tests (optional)
+```text
+🏆 Quest Complete!
+
++250 XP
+
+Current XP: 950
+
+LEVEL UP!
+
+You are now Level 4.
 ```
 
-## Project Tips
+---
 
-- Sketch your domain model first using [dbdiagram.io](https://dbdiagram.io/)
-- Use `bundle exec rake console` to test your models before building the CLI
-- Use `binding.pry` for debugging
-- Use `puts` and `pp` or gems like `tty-table` for formatted CLI output
+# CRUD Functionality
 
-## Sample Project
+## Players
 
-A complete implementation is available on the `sample-project` branch. It demonstrates:
+### Create
 
-- **Pet Tracker** domain with Owners and Pets
-- Full CRUD with Active Record and a clean menu-driven CLI
-- Object-oriented design with user-friendly output
-- All required features including current value prompts for updates
+Create a new adventurer.
 
-To view the sample:
+### Read
 
-```bash
-git checkout sample-project
+View all adventurers or inspect an individual adventurer.
+
+### Update
+
+Modify an adventurer's information.
+
+### Delete
+
+Delete an adventurer and their associated quests.
+
+---
+
+## Quests
+
+### Create
+
+Accept a new quest.
+
+### Read
+
+View all quests, active quests, completed quests, or quests belonging to a specific player.
+
+### Update
+
+Modify quest details.
+
+### Delete
+
+Abandon a quest.
+
+---
+
+# Validations
+
+## Player
+
+- Name is required
+- Name must be unique
+- Level must be greater than zero
+- Current experience cannot be negative
+
+## Quest
+
+- Title is required
+- Difficulty is required
+- Experience reward must be greater than zero
+- Every quest must belong to a player
+
+---
+
+# Project Structure
+
+```text
+.
+├── app
+│   └── models
+│       ├── player.rb
+│       └── quest.rb
+├── cli
+│   └── main.rb
+├── config
+│   ├── database.yml
+│   └── environment.rb
+├── db
+│   ├── migrate
+│   └── seeds.rb
+└── README.md
 ```
 
-See `SAMPLE_PROJECT_README.md` for detailed documentation.
+---
 
-## Resources
+# Future Improvements
 
-- [dbdiagram.io](https://dbdiagram.io/)
-- [Active Record Basics](https://guides.rubyonrails.org/active_record_basics.html)
-- [Active Record Associations](https://guides.rubyonrails.org/association_basics.html)
-- [Active Record Validations](https://guides.rubyonrails.org/active_record_validations.html)
+Future versions of QuestCLI may include:
+
+- Character classes
+- Gold and economy system
+- Inventory management
+- Equipment
+- NPC quest givers
+- Random quest generation
+- Quest categories
+- Achievements
+- Player statistics dashboard
+- Multiple save files
+- ASCII art and enhanced terminal styling
+
+---
+
+# Learning Objectives
+
+This project demonstrates:
+
+- Object-Oriented Programming
+- Active Record Associations
+- Active Record Validations
+- Database Migrations
+- SQLite3
+- CRUD Operations
+- Menu-Driven CLI Design
+- Ruby Classes and Modules
+- Separation of Concerns
+
+---
+
+# Author
+
+Thomas Correia
