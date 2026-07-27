@@ -4,7 +4,7 @@
 
 QuestForge is a Ruby command-line application designed for users who want to manage an RPG-inspired adventurer and quest log.
 
-Users can create an adventurer, accept quests, update quest information, complete quests, earn experience points, and remove quests they no longer want to pursue.
+Users can create an adventurer, accept quests, update quest information, complete quests, earn experience points, level up, and abandon quests they no longer wish to pursue.
 
 The goal is to create a simple but engaging CLI experience that demonstrates CRUD operations, Active Record associations, database management, validations, and object-oriented Ruby design.
 
@@ -18,39 +18,41 @@ The goal is to create a simple but engaging CLI experience that demonstrates CRU
 
 ### Details
 
-* Create a new player
-* Enter a player name
-* Assign a starting level of 1
-* Assign starting experience of 0
-* Save the player to the database
-* View all saved players
-* View an individual player's information
-* Update a player's name
-* Delete a player
-* Display validation errors when player information is invalid
-* Confirm before deleting a player
+- Create a new player
+- Enter a player name
+- Assign a starting level of 1
+- Assign starting experience of 0
+- Save the player to the database
+- View all saved players
+- View an individual player's information
+- Update a player's name
+- Delete a player
+- Display validation errors when player information is invalid
+- Confirm before deleting a player
 
 ---
 
-## Feature 2 - Create and View Quests
+## Feature 2 - Accept and View Quests
 
-**User Story:** As a user, I want to create quests for an adventurer so that I can give the player objectives to complete.
+**User Story:** As a user, I want my adventurer to accept quests so that they can begin working toward objectives and earning experience.
 
 ### Details
 
-* Select the player receiving the quest
-* Enter a quest title
-* Enter a quest description
-* Select a quest difficulty
-* Assign an experience-point reward
-* Save the quest to the database
-* Display the newly created quest
-* View all quests
-* View quests belonging to a specific player
-* View active quests
-* View completed quests
-* Display the player associated with each quest
-* Display validation errors when quest information is invalid
+- Select the player receiving the quest
+- Enter a quest title
+- Enter a quest description
+- Select a quest difficulty
+- Assign an experience-point reward
+- Save the quest to the database
+- Automatically mark newly accepted quests as active
+- Display a "Quest Accepted" confirmation message
+- Display the newly accepted quest
+- View all quests
+- View quests belonging to a specific player
+- View active quests
+- View completed quests
+- Display the player associated with each quest
+- Display validation errors when quest information is invalid
 
 ---
 
@@ -60,33 +62,35 @@ The goal is to create a simple but engaging CLI experience that demonstrates CRU
 
 ### Details
 
-* Select a quest to update
-* Display the current quest title before requesting a new value
-* Display the current description before requesting a new value
-* Display the current difficulty before requesting a new value
-* Display the current experience reward before requesting a new value
-* Allow the user to keep an existing value by leaving the input blank
-* Save updated quest information to the database
-* Display confirmation after the quest is updated
-* Display validation errors when updated information is invalid
+- Select a quest to update
+- Display the current quest title before requesting a new value
+- Display the current description before requesting a new value
+- Display the current difficulty before requesting a new value
+- Display the current experience reward before requesting a new value
+- Allow the user to keep an existing value by leaving the input blank
+- Save updated quest information to the database
+- Display confirmation after the quest is updated
+- Display validation errors when updated information is invalid
 
 ---
 
 ## Feature 4 - Complete Quests and Earn Experience
 
-**User Story:** As a user, I want to complete quests and earn experience so that my adventurer can progress.
+**User Story:** As a user, I want my adventurer to complete accepted quests so that they earn experience and grow stronger.
 
 ### Details
 
-* Select an active quest
-* Mark the quest as completed
-* Add the quest's experience reward to the associated player
-* Save the updated quest
-* Save the player's updated experience
-* Display the amount of experience earned
-* Prevent a completed quest from awarding experience more than once
-* Display confirmation after completing a quest
-* Display the player's updated level and experience
+- Select an active quest
+- Confirm quest completion
+- Mark the quest as completed
+- Add the quest's experience reward to the associated player
+- Save the updated quest
+- Save the player's updated experience
+- Display a "Quest Complete" confirmation message
+- Display the amount of experience earned
+- Display the player's updated level and experience
+- Prevent a completed quest from being completed twice
+- Prevent a completed quest from awarding experience more than once
 
 ---
 
@@ -96,29 +100,29 @@ The goal is to create a simple but engaging CLI experience that demonstrates CRU
 
 ### Details
 
-* Calculate a player's level using accumulated experience
-* Check for a level increase after completing a quest
-* Update the player's level when the required experience is reached
-* Display a level-up message
-* Display the player's current level
-* Display the player's current experience
-* Keep the level calculation inside the Player model
+- Calculate a player's level using accumulated experience
+- Check for a level increase after completing a quest
+- Update the player's level when the required experience is reached
+- Display a level-up message
+- Display the player's current level
+- Display the player's current experience
+- Keep the level calculation inside the Player model
 
 ---
 
-## Feature 6 - Delete and Abandon Quests
+## Feature 6 - Abandon Quests
 
-**User Story:** As a user, I want to delete quests so that I can remove objectives I no longer want to pursue.
+**User Story:** As a user, I want to abandon quests so that I can remove objectives I no longer want to pursue.
 
 ### Details
 
-* Select a quest to delete
-* Display the selected quest before deletion
-* Ask the user to confirm the deletion
-* Delete the quest from the database
-* Return to the quest menu after deletion
-* Display confirmation after the quest is deleted
-* Handle an invalid quest selection without crashing the application
+- Select a quest to abandon
+- Display the selected quest before deletion
+- Ask the user to confirm the deletion
+- Delete the quest from the database
+- Return to the quest menu after deletion
+- Display confirmation after the quest is abandoned
+- Handle an invalid quest selection without crashing the application
 
 ---
 
@@ -128,17 +132,42 @@ The goal is to create a simple but engaging CLI experience that demonstrates CRU
 
 ### Details
 
-* Display a main menu
-* Display numbered menu choices
-* Keep the application running inside a loop
-* Allow the user to return to the previous menu
-* Allow the user to exit the application
-* Handle invalid menu choices
-* Display clear success messages
-* Display clear error messages
-* Format player and quest information for readability
-* Separate CLI responsibilities into at least two Ruby classes
-* Use reusable helper methods to avoid repeated code
+- Display a main menu
+- Display numbered menu choices
+- Keep the application running inside a loop
+- Allow the user to return to the previous menu
+- Allow the user to exit the application
+- Handle invalid menu choices
+- Display clear success messages
+- Display clear error messages
+- Format player and quest information for readability
+- Separate CLI responsibilities into at least two Ruby classes
+- Use reusable helper methods to avoid repeated code
+
+---
+
+# Quest Lifecycle
+
+```text
+Quest Accepted
+      │
+      ▼
+Active Quest
+      │
+      ▼
+Quest Updated (optional)
+      │
+      ▼
+Quest Completed
+      │
+      ▼
+Experience Awarded
+      │
+      ▼
+Player Levels Up (if enough XP)
+```
+
+A quest may also be abandoned before it is completed.
 
 ---
 
@@ -146,20 +175,21 @@ The goal is to create a simple but engaging CLI experience that demonstrates CRU
 
 The initial project scope will include:
 
-* Create players
-* View players
-* Update players
-* Delete players
-* Create quests
-* View all quests
-* View quests belonging to a player
-* Update quests
-* Complete quests
-* Delete quests
-* Award experience for completed quests
-* Level up players
-* Display validation errors
-* Menu-driven CLI navigation
+- Create players
+- View players
+- Update players
+- Delete players
+- Accept quests
+- View all quests
+- View quests belonging to a player
+- Update quests
+- Complete quests
+- Abandon quests
+- Award experience for completed quests
+- Prevent completed quests from awarding experience twice
+- Level up players
+- Display validation errors
+- Menu-driven CLI navigation
 
 ---
 
@@ -188,13 +218,13 @@ The initial project scope will include:
 ## Quest Menu
 
 ```txt
-1. Create Quest
+1. Accept Quest
 2. View All Quests
 3. View Active Quests
 4. View Completed Quests
 5. Update Quest
 6. Complete Quest
-7. Delete Quest
+7. Abandon Quest
 8. Return to Main Menu
 ```
 
@@ -202,11 +232,11 @@ The initial project scope will include:
 
 # Planned Classes
 
-* Player
-* Quest
-* QuestForgeCLI
-* PlayerMenu
-* QuestMenu
+- Player
+- Quest
+- QuestForgeCLI
+- PlayerMenu
+- QuestMenu
 
 The exact CLI class structure may be adjusted during development, but the application will contain at least two Ruby classes responsible for CLI behavior.
 
@@ -251,12 +281,12 @@ A Player has many Quests.
 
 A Quest belongs to one Player.
 
-```txt
+```text
 Player
   |
   | has many
   |
-  v
+  ▼
 Quest
 ```
 
@@ -264,9 +294,7 @@ Quest
 class Player < ActiveRecord::Base
   has_many :quests, dependent: :destroy
 end
-```
 
-```ruby
 class Quest < ActiveRecord::Base
   belongs_to :player
 end
@@ -278,18 +306,18 @@ end
 
 ## Player Validations
 
-* Name must be present
-* Name must be unique
-* Level must be greater than 0
-* Current experience must be 0 or greater
+- Name must be present
+- Name must be unique
+- Level must be greater than 0
+- Current experience must be 0 or greater
 
 ## Quest Validations
 
-* Title must be present
-* Difficulty must be present
-* Experience reward must be greater than 0
-* Completed must be either true or false
-* Player must exist
+- Title must be present
+- Difficulty must be present
+- Experience reward must be greater than 0
+- Completed must be either true or false
+- Player must exist
 
 ---
 
@@ -327,13 +355,13 @@ All database interactions will use Active Record.
 
 The application will contain at least two Active Record models:
 
-* Player
-* Quest
+- Player
+- Quest
 
 ## One-to-Many Relationship
 
-* Player has many Quests
-* Quest belongs to Player
+- Player has many Quests
+- Quest belongs to Player
 
 ## CRUD Operations
 
@@ -361,17 +389,17 @@ Update prompts will display the current value before asking the user to enter a 
 
 These features are not required for the MVP:
 
-* Search quests by title
-* Sort quests by difficulty
-* Randomly generate quests
-* Add gold rewards
-* Add character classes
-* Add quest categories
-* Add deadlines to quests
-* Display player statistics
-* Display completion percentages
-* Add achievements
-* Add an inventory system
-* Add items as a third model
-* Add multiple experience progression systems
-* Add ASCII art and enhanced CLI styling
+- Search quests by title
+- Sort quests by difficulty
+- Randomly generate quests
+- Add gold rewards
+- Add character classes
+- Add quest categories
+- Add deadlines to quests
+- Display player statistics
+- Display completion percentages
+- Add achievements
+- Add an inventory system
+- Add items as a third model
+- Add multiple experience progression systems
+- Add ASCII art and enhanced CLI styling
