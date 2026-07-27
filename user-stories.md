@@ -1,8 +1,8 @@
-# QuestForge
+# QuestCLI
 
 ## Overview
 
-QuestForge is a Ruby command-line application designed for users who want to manage an RPG-inspired adventurer and quest log.
+QuestCLI is a Ruby command-line application designed for users who want to manage an RPG-inspired adventurer and quest log.
 
 Users can create an adventurer, accept quests, update quest information, complete quests, earn experience points, level up, and abandon quests they no longer wish to pursue.
 
@@ -234,7 +234,7 @@ The initial project scope will include:
 
 - Player
 - Quest
-- QuestForgeCLI
+- QuestCLI
 - PlayerMenu
 - QuestMenu
 
