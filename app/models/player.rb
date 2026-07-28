@@ -1,4 +1,6 @@
 class Player < ActiveRecord::Base
+  has_many :quests, dependent: :destroy
+
   validates :name, presence: true, uniqueness: true
 
   validates :level,

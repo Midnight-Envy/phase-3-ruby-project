@@ -51,7 +51,7 @@ class QuestCLI
   end
 
   def manage_quests
-    puts "\nQuest management will be added in a future feature."
+    QuestMenu.new.run
   end
 
   def view_quest_log
