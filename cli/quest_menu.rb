@@ -5,6 +5,7 @@ class QuestMenu
     "3" => :view_player_quests,
     "4" => :view_active_quests,
     "5" => :view_completed_quests,
+    "6" => :update_quest,
   }.freeze
 
   def run
@@ -27,12 +28,13 @@ class QuestMenu
     puts "3. View Adventurer's Quests"
     puts "4. View Active Quests"
     puts "5. View Completed Quests"
-    puts "6. Return to Main Menu"
+    puts "6. Update Quest"
+    puts "7. Return to Main Menu"
     print "Choose an option: "
   end
 
   def return_to_main_menu?(choice)
-    choice == "6"
+    choice == "7"
   end
 
   def perform_action(choice)
@@ -52,7 +54,8 @@ class QuestMenu
     quest = player.quests.build(quest_attributes)
 
     if quest.save
-      puts "#{quest.title} accepted by #{player.name}."
+      puts "Quest Accepted!"
+      display_quest(quest)
     else
       display_errors(quest)
     end
@@ -98,6 +101,40 @@ class QuestMenu
     display_quests(Quest.where(completed: true))
   end
 
+  def update_quest
+    quest = select_quest
+    return unless quest
+
+    if quest.update(updated_quest_attributes(quest))
+      puts "Quest updated successfully."
+      display_quest(quest)
+    else
+      display_errors(quest)
+    end
+  end
+
+  def updated_quest_attributes(quest)
+    {
+      title: updated_value("Title", quest.title),
+      description: updated_value("Description", quest.description),
+      difficulty: updated_difficulty(quest),
+      xp_reward: updated_value("XP reward", quest.xp_reward),
+    }
+  end
+
+  def updated_difficulty(quest)
+    value = updated_value("Difficulty", quest.difficulty)
+
+    value == quest.difficulty ? value : value.capitalize
+  end
+
+  def updated_value(label, current_value)
+    print "#{label} [#{current_value}]: "
+    input = gets.chomp
+
+    input.empty? ? current_value : input
+  end
+
   def select_player
     players = Player.all
 
@@ -111,7 +148,29 @@ class QuestMenu
     end
 
     print "Enter adventurer ID: "
-    Player.find_by(id: gets.chomp)
+    player = Player.find_by(id: gets.chomp)
+
+    puts "Adventurer not found." unless player
+    player
+  end
+
+  def select_quest
+    quests = Quest.all
+
+    if quests.empty?
+      puts "No quests found."
+      return
+    end
+
+    quests.each do |quest|
+      puts "#{quest.id}. #{quest.title}"
+    end
+
+    print "Enter quest ID: "
+    quest = Quest.find_by(id: gets.chomp)
+
+    puts "Quest not found." unless quest
+    quest
   end
 
   def display_quests(quests)
