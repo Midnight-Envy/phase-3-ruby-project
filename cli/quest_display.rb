@@ -8,7 +8,8 @@ class QuestDisplay
     puts "5. View Completed Quests"
     puts "6. Update Quest"
     puts "7. Complete Quest"
-    puts "8. Return to Main Menu"
+    puts "8. Abandon Quest"
+    puts "9. Return to Main Menu"
     print "Choose an option: "
   end
 
@@ -46,6 +47,12 @@ class QuestDisplay
 
     puts "Level: #{player.level}"
     puts "Current XP: #{player.current_xp}"
+  end
+
+  def abandonment(quest)
+    puts "\nQuest Abandoned."
+    puts "#{quest.title} has been removed."
+    puts "No XP was awarded."
   end
 
   def errors(record)

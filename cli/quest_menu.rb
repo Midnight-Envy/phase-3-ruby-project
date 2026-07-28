@@ -9,6 +9,7 @@ class QuestMenu
     "5" => :view_completed_quests,
     "6" => :update_quest,
     "7" => :complete_quest,
+    "8" => :abandon_quest,
   }.freeze
 
   def initialize
@@ -20,7 +21,7 @@ class QuestMenu
       @display.menu
       choice = gets.chomp
 
-      break if choice == "8"
+      break if choice == "9"
 
       perform_action(choice)
     end
@@ -131,14 +132,9 @@ class QuestMenu
     return unless quest
 
     @display.quest_details(quest)
-    return unless confirm_completion?
+    return unless confirm_action?("Complete this quest?")
 
     complete_quest_and_award_xp(quest)
-  end
-
-  def confirm_completion?
-    print "Complete this quest? (y/n): "
-    gets.chomp.downcase == "y"
   end
 
   def complete_quest_and_award_xp(quest)
@@ -153,6 +149,29 @@ class QuestMenu
     @display.completion(quest, player, previous_level)
   rescue ActiveRecord::RecordInvalid => e
     @display.errors(e.record)
+  end
+
+  def abandon_quest
+    quest = select_active_quest
+    return unless quest
+
+    @display.quest_details(quest)
+    return unless confirm_action?("Abandon this quest?")
+
+    destroy_quest(quest)
+  end
+
+  def destroy_quest(quest)
+    if quest.destroy
+      @display.abandonment(quest)
+    else
+      @display.errors(quest)
+    end
+  end
+
+  def confirm_action?(message)
+    print "#{message} (y/n): "
+    gets.chomp.downcase == "y"
   end
 
   def select_player
@@ -175,13 +194,11 @@ class QuestMenu
   end
 
   def select_quest
-    quests = Quest.all
-    select_quest_from(quests, "quest")
+    select_quest_from(Quest.all, "quest")
   end
 
   def select_active_quest
-    active_quests = Quest.where(completed: false)
-    select_quest_from(active_quests, "active quest")
+    select_quest_from(Quest.where(completed: false), "active quest")
   end
 
   def select_quest_from(quests, quest_type)
