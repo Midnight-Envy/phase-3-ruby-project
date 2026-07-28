@@ -6,6 +6,7 @@ class QuestMenu
     "4" => :view_active_quests,
     "5" => :view_completed_quests,
     "6" => :update_quest,
+    "7" => :complete_quest,
   }.freeze
 
   def run
@@ -29,12 +30,13 @@ class QuestMenu
     puts "4. View Active Quests"
     puts "5. View Completed Quests"
     puts "6. Update Quest"
-    puts "7. Return to Main Menu"
+    puts "7. Complete Quest"
+    puts "8. Return to Main Menu"
     print "Choose an option: "
   end
 
   def return_to_main_menu?(choice)
-    choice == "7"
+    choice == "8"
   end
 
   def perform_action(choice)
@@ -135,6 +137,41 @@ class QuestMenu
     input.empty? ? current_value : input
   end
 
+  def complete_quest
+    quest = select_active_quest
+    return unless quest
+
+    display_quest(quest)
+    return unless confirm_completion?
+
+    complete_quest_and_award_xp(quest)
+  end
+
+  def confirm_completion?
+    print "Complete this quest? (y/n): "
+    gets.chomp.downcase == "y"
+  end
+
+  def complete_quest_and_award_xp(quest)
+    player = quest.player
+
+    Quest.transaction do
+      quest.update!(completed: true)
+      player.update!(current_xp: player.current_xp + quest.xp_reward)
+    end
+
+    display_completion_message(quest, player)
+  rescue ActiveRecord::RecordInvalid => e
+    display_errors(e.record)
+  end
+
+  def display_completion_message(quest, player)
+    puts "\nQuest Complete!"
+    puts "#{player.name} earned #{quest.xp_reward} XP."
+    puts "Level: #{player.level}"
+    puts "Current XP: #{player.current_xp}"
+  end
+
   def select_player
     players = Player.all
 
@@ -162,15 +199,36 @@ class QuestMenu
       return
     end
 
-    quests.each do |quest|
-      puts "#{quest.id}. #{quest.title}"
-    end
+    display_quest_choices(quests)
 
     print "Enter quest ID: "
     quest = Quest.find_by(id: gets.chomp)
 
     puts "Quest not found." unless quest
     quest
+  end
+
+  def select_active_quest
+    active_quests = Quest.where(completed: false)
+
+    if active_quests.empty?
+      puts "No active quests found."
+      return
+    end
+
+    display_quest_choices(active_quests)
+
+    print "Enter active quest ID: "
+    quest = active_quests.find_by(id: gets.chomp)
+
+    puts "Active quest not found." unless quest
+    quest
+  end
+
+  def display_quest_choices(quests)
+    quests.each do |quest|
+      puts "#{quest.id}. #{quest.title}"
+    end
   end
 
   def display_quests(quests)
