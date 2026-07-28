@@ -21,4 +21,5 @@ require_all "app/models"
 
 # Require reusable CLI classes
 require_relative "../cli/player_menu"
+require_relative "../cli/quest_menu"
 require_relative "../cli/quest_cli"
