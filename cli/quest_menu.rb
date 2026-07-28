@@ -1,3 +1,5 @@
+require_relative "quest_display"
+
 class QuestMenu
   MENU_ACTIONS = {
     "1" => :accept_quest,
@@ -9,35 +11,22 @@ class QuestMenu
     "7" => :complete_quest,
   }.freeze
 
+  def initialize
+    @display = QuestDisplay.new
+  end
+
   def run
     loop do
-      display_menu
+      @display.menu
       choice = gets.chomp
 
-      break if return_to_main_menu?(choice)
+      break if choice == "8"
 
       perform_action(choice)
     end
   end
 
   private
-
-  def display_menu
-    puts "\nQUEST MENU"
-    puts "1. Accept Quest"
-    puts "2. View All Quests"
-    puts "3. View Adventurer's Quests"
-    puts "4. View Active Quests"
-    puts "5. View Completed Quests"
-    puts "6. Update Quest"
-    puts "7. Complete Quest"
-    puts "8. Return to Main Menu"
-    print "Choose an option: "
-  end
-
-  def return_to_main_menu?(choice)
-    choice == "8"
-  end
 
   def perform_action(choice)
     action = MENU_ACTIONS[choice]
@@ -57,9 +46,9 @@ class QuestMenu
 
     if quest.save
       puts "Quest Accepted!"
-      display_quest(quest)
+      @display.quest_details(quest)
     else
-      display_errors(quest)
+      @display.errors(quest)
     end
   end
 
@@ -85,22 +74,22 @@ class QuestMenu
   end
 
   def view_all_quests
-    display_quests(Quest.all)
+    @display.quests(Quest.all)
   end
 
   def view_player_quests
     player = select_player
     return unless player
 
-    display_quests(player.quests)
+    @display.quests(player.quests)
   end
 
   def view_active_quests
-    display_quests(Quest.where(completed: false))
+    @display.quests(Quest.where(completed: false))
   end
 
   def view_completed_quests
-    display_quests(Quest.where(completed: true))
+    @display.quests(Quest.where(completed: true))
   end
 
   def update_quest
@@ -109,9 +98,9 @@ class QuestMenu
 
     if quest.update(updated_quest_attributes(quest))
       puts "Quest updated successfully."
-      display_quest(quest)
+      @display.quest_details(quest)
     else
-      display_errors(quest)
+      @display.errors(quest)
     end
   end
 
@@ -141,7 +130,7 @@ class QuestMenu
     quest = select_active_quest
     return unless quest
 
-    display_quest(quest)
+    @display.quest_details(quest)
     return unless confirm_completion?
 
     complete_quest_and_award_xp(quest)
@@ -154,22 +143,16 @@ class QuestMenu
 
   def complete_quest_and_award_xp(quest)
     player = quest.player
+    previous_level = player.level
 
     Quest.transaction do
       quest.update!(completed: true)
-      player.update!(current_xp: player.current_xp + quest.xp_reward)
+      player.add_experience!(quest.xp_reward)
     end
 
-    display_completion_message(quest, player)
+    @display.completion(quest, player, previous_level)
   rescue ActiveRecord::RecordInvalid => e
-    display_errors(e.record)
-  end
-
-  def display_completion_message(quest, player)
-    puts "\nQuest Complete!"
-    puts "#{player.name} earned #{quest.xp_reward} XP."
-    puts "Level: #{player.level}"
-    puts "Current XP: #{player.current_xp}"
+    @display.errors(e.record)
   end
 
   def select_player
@@ -193,67 +176,26 @@ class QuestMenu
 
   def select_quest
     quests = Quest.all
-
-    if quests.empty?
-      puts "No quests found."
-      return
-    end
-
-    display_quest_choices(quests)
-
-    print "Enter quest ID: "
-    quest = Quest.find_by(id: gets.chomp)
-
-    puts "Quest not found." unless quest
-    quest
+    select_quest_from(quests, "quest")
   end
 
   def select_active_quest
     active_quests = Quest.where(completed: false)
-
-    if active_quests.empty?
-      puts "No active quests found."
-      return
-    end
-
-    display_quest_choices(active_quests)
-
-    print "Enter active quest ID: "
-    quest = active_quests.find_by(id: gets.chomp)
-
-    puts "Active quest not found." unless quest
-    quest
+    select_quest_from(active_quests, "active quest")
   end
 
-  def display_quest_choices(quests)
-    quests.each do |quest|
-      puts "#{quest.id}. #{quest.title}"
-    end
-  end
-
-  def display_quests(quests)
+  def select_quest_from(quests, quest_type)
     if quests.empty?
-      puts "No quests found."
+      puts "No #{quest_type}s found."
       return
     end
 
-    quests.each { |quest| display_quest(quest) }
-  end
+    @display.quest_choices(quests)
 
-  def display_quest(quest)
-    status = quest.completed? ? "Completed" : "Active"
+    print "Enter #{quest_type} ID: "
+    quest = quests.find_by(id: gets.chomp)
 
-    puts "\n#{quest.title}"
-    puts "Adventurer: #{quest.player.name}"
-    puts "Description: #{quest.description}"
-    puts "Difficulty: #{quest.difficulty}"
-    puts "XP Reward: #{quest.xp_reward}"
-    puts "Status: #{status}"
-  end
-
-  def display_errors(record)
-    record.errors.full_messages.each do |message|
-      puts "Error: #{message}"
-    end
+    puts "#{quest_type.capitalize} not found." unless quest
+    quest
   end
 end
