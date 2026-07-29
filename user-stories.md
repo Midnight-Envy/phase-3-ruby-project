@@ -146,6 +146,25 @@ The goal is to create a simple but engaging CLI experience that demonstrates CRU
 
 ---
 
+## Feature 8 - Color-Coded CLI Feedback
+
+**User Story:** As a player, I want important information in the CLI to use consistent colors so that I can quickly understand quest difficulty, status, rewards, errors, and successful actions.
+
+### Details
+
+- Menu headings and decorative separators remain white.
+- Successful actions and completed quests display in green.
+- Errors and invalid selections display in red.
+- Prompts, warnings, confirmations, and active quests display in yellow.
+- XP rewards and level-up information display in magenta.
+- Easy difficulty displays in green.
+- Medium difficulty displays in yellow.
+- Hard difficulty displays in red.
+- Color formatting is managed through a reusable `Colors` module.
+- Existing player and quest functionality continues to work.
+
+---
+
 # Quest Lifecycle
 
 ```text
