@@ -165,6 +165,8 @@ The goal is to create a simple but engaging CLI experience that demonstrates CRU
 
 ---
 
+
+
 # Quest Lifecycle
 
 ```text
@@ -408,17 +410,135 @@ Update prompts will display the current value before asking the user to enter a 
 
 These features are not required for the MVP:
 
-- Search quests by title
-- Sort quests by difficulty
-- Randomly generate quests
-- Add gold rewards
-- Add character classes
-- Add quest categories
-- Add deadlines to quests
-- Display player statistics
-- Display completion percentages
-- Add achievements
-- Add an inventory system
-- Add items as a third model
-- Add multiple experience progression systems
-- Add ASCII art and enhanced CLI styling
+-Character classes
+-Gold rewards
+-Items
+-Adventurer inventory
+-Quest prerequisites
+-Store
+-Quest steps and interactions
+-Full seed data
+-Final balancing and CLI polish
+
+# Stretch Goal User Stories
+
+These user stories describe optional features that expand QuestCLI into a more complete playable RPG experience.
+
+## Feature 9 - Character Classes
+
+**User Story:** As a player, I want my adventurer to specialize into a character class so that the adventurer has a distinct identity and progression path.
+
+### Details
+
+- An eligible adventurer can choose from available character classes.
+- The selected class is saved to the adventurer.
+- An adventurer cannot select an invalid class.
+- An adventurer cannot repeatedly change classes unless the game explicitly allows it.
+- The adventurer's class appears in their details.
+- Existing adventurers remain valid before selecting a class.
+
+## Feature 10 - Gold Rewards
+
+**User Story:** As a player, I want quests to reward gold so that I can purchase useful items.
+
+### Details
+
+- Players have a gold balance.
+- Quests may define a gold reward.
+- Completing a quest adds its gold reward to the player.
+- Gold is awarded only once per quest.
+- The player's current gold appears in their details.
+
+## Feature 11 - Quest Item Rewards
+
+**User Story:** As a player, I want quests to reward items so that completing adventures can unlock tools and valuable objects.
+
+### Details
+
+- Quests may reward one or more items.
+- Quest rewards are added to the player's inventory.
+- Rewards are granted only after successful quest completion.
+- The CLI displays the items earned.
+- The same reward is not granted more than once.
+
+## Feature 12 - Adventurer Inventory
+
+**User Story:** As a player, I want my adventurer to have an inventory so that I can collect, view, and use items.
+
+### Details
+
+- A player can own multiple items.
+- Inventory tracks the quantity of each item.
+- The player can view their inventory.
+- Purchased and rewarded items are added to inventory.
+- Empty inventories display a clear message.
+
+## Feature 13 - Quest Prerequisites
+
+**User Story:** As a player, I want quests to have prerequisites so that progression feels meaningful and advanced quests must be earned.
+
+### Details
+
+- A quest may require a minimum level.
+- A quest may require a character class.
+- A quest may require one or more inventory items.
+- A quest may require another quest to be completed.
+- The player cannot begin an unavailable quest.
+- The CLI explains every unmet prerequisite.
+
+## Feature 14 - Item Store
+
+**User Story:** As a player, I want to purchase items from a store so that I can prepare for future quests.
+
+### Details
+
+- The store displays available items.
+- Each item displays a name, description, and gold price.
+- Players can purchase items they can afford.
+- Purchased items are added to inventory.
+- The cost is deducted from the player's gold.
+- Players cannot purchase items they cannot afford.
+- Invalid purchases display a clear error.
+
+## Feature 15 - Interactive Quest Steps
+
+**User Story:** As a player, I want quests to contain interactive steps so that completing a quest feels like playing an adventure instead of selecting a single menu option.
+
+### Details
+
+- A quest contains one or more ordered steps.
+- The number and complexity of steps can vary by difficulty.
+- Steps may include riddles, combat, choices, obstacles, dialogue, and item use.
+- Required steps must be completed in order.
+- Failed or invalid input does not automatically complete the quest.
+- The quest completes only after all required steps are finished.
+- Rewards are granted after the final step.
+
+## Feature 16 - Difficulty-Based Quest Depth
+
+**User Story:** As a player, I want harder quests to contain more challenging and longer interactions so that difficulty affects gameplay rather than only rewards.
+
+### Details
+
+- Easy quests contain a small number of simple steps.
+- Medium quests contain multiple interactions.
+- Hard quests contain longer sequences and more demanding prerequisites.
+- Difficulty affects XP, gold, and possible item rewards.
+- The CLI clearly displays quest difficulty.
+
+## Feature 17 - Seeded Adventure
+
+**User Story:** As a new player, I want the game to include a complete seeded adventure so that I can create an adventurer and begin playing immediately.
+
+### Details
+
+- The seed file creates reusable items.
+- The seed file creates store inventory.
+- The seed file creates quests of every difficulty.
+- Seeded quests include XP and gold rewards.
+- Some quests include item rewards.
+- Some quests include prerequisites.
+- Seeded quests contain interactive steps.
+- Quests form a logical progression.
+- Running the seed task does not create uncontrolled duplicate data.
+- A new user can play without manually creating every quest.
