@@ -21,7 +21,7 @@ class QuestMenu
       @display.menu
       choice = gets.chomp
 
-      break if choice == "9"
+      break if return_to_main_menu?(choice)
 
       perform_action(choice)
     end
@@ -29,13 +29,20 @@ class QuestMenu
 
   private
 
+  def return_to_main_menu?(choice)
+    return false unless choice == "9"
+
+    puts "\nReturning to the main menu..."
+    true
+  end
+
   def perform_action(choice)
     action = MENU_ACTIONS[choice]
 
     if action
       send(action)
     else
-      puts "Invalid selection."
+      puts "\nInvalid choice. Please select an option from 1 to 9."
     end
   end
 
@@ -46,7 +53,7 @@ class QuestMenu
     quest = player.quests.build(quest_attributes)
 
     if quest.save
-      puts "Quest Accepted!"
+      puts "\nQuest accepted successfully!"
       @display.quest_details(quest)
     else
       @display.errors(quest)
@@ -54,7 +61,7 @@ class QuestMenu
   end
 
   def quest_attributes
-    print "Quest title: "
+    print "\nQuest title: "
     title = gets.chomp
 
     print "Description: "
@@ -98,7 +105,7 @@ class QuestMenu
     return unless quest
 
     if quest.update(updated_quest_attributes(quest))
-      puts "Quest updated successfully."
+      puts "\nQuest updated successfully!"
       @display.quest_details(quest)
     else
       @display.errors(quest)
@@ -121,7 +128,7 @@ class QuestMenu
   end
 
   def updated_value(label, current_value)
-    print "#{label} [#{current_value}]: "
+    print "\n#{label} [#{current_value}]: "
     input = gets.chomp
 
     input.empty? ? current_value : input
@@ -132,7 +139,11 @@ class QuestMenu
     return unless quest
 
     @display.quest_details(quest)
-    return unless confirm_action?("Complete this quest?")
+
+    unless confirm_action?("Complete this quest?")
+      puts "\nQuest completion canceled."
+      return
+    end
 
     complete_quest_and_award_xp(quest)
   end
@@ -156,7 +167,11 @@ class QuestMenu
     return unless quest
 
     @display.quest_details(quest)
-    return unless confirm_action?("Abandon this quest?")
+
+    unless confirm_action?("Abandon this quest?")
+      puts "\nQuest abandonment canceled."
+      return
+    end
 
     destroy_quest(quest)
   end
@@ -170,7 +185,7 @@ class QuestMenu
   end
 
   def confirm_action?(message)
-    print "#{message} (y/n): "
+    print "\n#{message} (y/n): "
     gets.chomp.downcase == "y"
   end
 
@@ -178,18 +193,20 @@ class QuestMenu
     players = Player.all
 
     if players.empty?
-      puts "No adventurers found."
+      puts "\nNo adventurers have been created yet."
       return
     end
+
+    puts "\nSelect an adventurer:"
 
     players.each do |player|
       puts "#{player.id}. #{player.name}"
     end
 
-    print "Enter adventurer ID: "
-    player = Player.find_by(id: gets.chomp)
+    print "\nEnter adventurer ID: "
+    player = players.find_by(id: gets.chomp)
 
-    puts "Adventurer not found." unless player
+    puts "\nAdventurer not found." unless player
     player
   end
 
@@ -198,21 +215,24 @@ class QuestMenu
   end
 
   def select_active_quest
-    select_quest_from(Quest.where(completed: false), "active quest")
+    select_quest_from(
+      Quest.where(completed: false),
+      "active quest"
+    )
   end
 
   def select_quest_from(quests, quest_type)
     if quests.empty?
-      puts "No #{quest_type}s found."
+      puts "\nNo #{quest_type}s found."
       return
     end
 
     @display.quest_choices(quests)
 
-    print "Enter #{quest_type} ID: "
+    print "\nEnter #{quest_type} ID: "
     quest = quests.find_by(id: gets.chomp)
 
-    puts "#{quest_type.capitalize} not found." unless quest
+    puts "\n#{quest_type.capitalize} not found." unless quest
     quest
   end
 end

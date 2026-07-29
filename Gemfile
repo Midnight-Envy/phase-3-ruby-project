@@ -32,3 +32,5 @@ group :test do
   gem "database_cleaner", "~> 2.0"
   gem "rspec", "~> 3.10"
 end
+
+gem "ostruct"

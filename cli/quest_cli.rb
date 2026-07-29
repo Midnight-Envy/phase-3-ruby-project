@@ -6,6 +6,8 @@ class QuestCLI
   }.freeze
 
   def run
+    display_welcome
+
     loop do
       display_main_menu
       choice = gets.chomp
@@ -18,9 +20,16 @@ class QuestCLI
 
   private
 
+  def display_welcome
+    puts "\n========================"
+    puts "   WELCOME TO QUESTCLI"
+    puts "========================"
+    puts "Create adventurers, accept quests, and earn experience!"
+  end
+
   def display_main_menu
     puts "\n========================"
-    puts "        QUESTCLI"
+    puts "       MAIN MENU"
     puts "========================"
     puts "1. Manage Adventurers"
     puts "2. Manage Quests"
@@ -32,7 +41,10 @@ class QuestCLI
   def exit_selected?(choice)
     return false unless choice == "4"
 
-    puts "\nThanks for using QuestCLI!"
+    puts "\n========================"
+    puts "   THANKS FOR PLAYING"
+    puts "========================"
+    puts "Your adventures have been saved."
     true
   end
 
@@ -55,6 +67,8 @@ class QuestCLI
   end
 
   def view_quest_log
-    puts "\nQuest log will be added in a future feature."
+    players = Player.includes(:quests)
+
+    QuestDisplay.new.quest_log(players)
   end
 end
