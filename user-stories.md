@@ -410,15 +410,16 @@ Update prompts will display the current value before asking the user to enter a 
 
 These features are not required for the MVP:
 
--Character classes
--Gold rewards
--Items
--Adventurer inventory
--Quest prerequisites
--Store
--Quest steps and interactions
--Full seed data
--Final balancing and CLI polish
+- Character classes
+- Gold rewards
+- Items
+- Adventurer inventory
+- Quest prerequisites
+- Store
+- Quest steps and interactions
+- Full seed data
+- Final balancing and CLI polish
+
 
 # Stretch Goal User Stories
 
