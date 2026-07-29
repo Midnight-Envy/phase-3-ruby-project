@@ -1,3 +1,5 @@
+require_relative "colors"
+
 class QuestCLI
   MENU_ACTIONS = {
     "1" => :manage_adventurers,
@@ -21,30 +23,33 @@ class QuestCLI
   private
 
   def display_welcome
-    puts "\n========================"
-    puts "   WELCOME TO QUESTCLI"
-    puts "========================"
+    puts
+    puts("========================")
+    puts Colors.heading("      QUESTCLI")
+    puts("========================")
     puts "Create adventurers, accept quests, and earn experience!"
   end
 
   def display_main_menu
-    puts "\n========================"
-    puts "       MAIN MENU"
+    puts
+    puts "========================"
+    puts Colors.heading("       MAIN MENU")
     puts "========================"
     puts "1. Manage Adventurers"
     puts "2. Manage Quests"
     puts "3. View Quest Log"
     puts "4. Exit"
-    print "\nChoose an option: "
+    print "\n#{Colors.yellow('Choose an option: ')}"
   end
 
   def exit_selected?(choice)
     return false unless choice == "4"
 
-    puts "\n========================"
-    puts "   THANKS FOR PLAYING"
+    puts
     puts "========================"
-    puts "Your adventures have been saved."
+    puts Colors.heading("   THANKS FOR PLAYING")
+    puts "========================"
+    puts Colors.success("Your adventures have been saved.")
     true
   end
 
@@ -54,7 +59,7 @@ class QuestCLI
     if action
       send(action)
     else
-      puts "\nInvalid choice. Please select an option from 1 to 4."
+      puts "\n#{Colors.error('Invalid choice. Please select an option from 1 to 4.')}"
     end
   end
 

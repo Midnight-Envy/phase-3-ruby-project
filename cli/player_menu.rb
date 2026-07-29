@@ -1,3 +1,5 @@
+require_relative "colors"
+
 class PlayerMenu
   MENU_ACTIONS = {
     "1" => :create_player,
@@ -21,8 +23,9 @@ class PlayerMenu
   private
 
   def display_menu
-    puts "\n========================"
-    puts "    ADVENTURER MENU"
+    puts
+    puts "========================"
+    puts Colors.heading("    ADVENTURER MENU")
     puts "========================"
     puts "1. Create Adventurer"
     puts "2. View All Adventurers"
@@ -30,13 +33,13 @@ class PlayerMenu
     puts "4. Update Adventurer"
     puts "5. Delete Adventurer"
     puts "6. Return to Main Menu"
-    print "\nChoose an option: "
+    print "\n#{Colors.yellow('Choose an option: ')}"
   end
 
   def return_to_main_menu?(choice)
     return false unless choice == "6"
 
-    puts "\nReturning to the main menu..."
+    puts "\n#{Colors.warning('Returning to the main menu...')}"
     true
   end
 
@@ -46,7 +49,7 @@ class PlayerMenu
     if action
       send(action)
     else
-      puts "\nInvalid choice. Please select an option from 1 to 6."
+      puts "\n#{Colors.error('Invalid choice. Please select an option from 1 to 6.')}"
     end
   end
 
@@ -55,7 +58,7 @@ class PlayerMenu
     player = Player.new(name: gets.chomp)
 
     if player.save
-      puts "\nAdventurer created successfully!"
+      puts "\n#{Colors.success('Adventurer created successfully!')}"
       display_player(player)
     else
       display_errors(player)
@@ -66,7 +69,7 @@ class PlayerMenu
     players = Player.all
 
     if players.empty?
-      puts "\nNo adventurers have been created yet."
+      puts "\n#{Colors.warning('No adventurers have been created yet.')}"
       return
     end
 
@@ -92,7 +95,7 @@ class PlayerMenu
     new_name = player.name if new_name.empty?
 
     if player.update(name: new_name)
-      puts "\nAdventurer updated successfully!"
+      puts "\n#{Colors.success('Adventurer updated successfully!')}"
       display_player(player)
     else
       display_errors(player)
@@ -103,13 +106,13 @@ class PlayerMenu
     player = select_player
     return unless player
 
-    puts "\nYou selected:"
+    puts "\n#{Colors.warning('You selected:')}"
     display_player(player)
 
     unless confirm_action?(
       "Delete this adventurer and all of their quests?"
     )
-      puts "\nDeletion canceled."
+      puts "\n#{Colors.warning('Deletion canceled.')}"
       return
     end
 
@@ -118,14 +121,14 @@ class PlayerMenu
 
   def destroy_player(player)
     if player.destroy
-      puts "\nAdventurer deleted successfully."
+      puts "\n#{Colors.success('Adventurer deleted successfully.')}"
     else
       display_errors(player)
     end
   end
 
   def confirm_action?(message)
-    print "\n#{message} (y/n): "
+    print "\n#{Colors.warning("#{message} (y/n): ")}"
     gets.chomp.downcase == "y"
   end
 
@@ -133,34 +136,35 @@ class PlayerMenu
     players = Player.all
 
     if players.empty?
-      puts "\nNo adventurers have been created yet."
+      puts "\n#{Colors.warning('No adventurers have been created yet.')}"
       return
     end
 
-    puts "\nSelect an adventurer:"
+    puts "\n#{Colors.heading('Select an adventurer:')}"
 
     players.each do |player|
-      puts "#{player.id}. #{player.name}"
+      puts "#{Colors.cyan(player.id)}. #{player.name}"
     end
 
     print "\nEnter adventurer ID: "
     player = players.find_by(id: gets.chomp)
 
-    puts "\nAdventurer not found." unless player
+    puts "\n#{Colors.error('Adventurer not found.')}" unless player
     player
   end
 
   def display_heading(title)
-    puts "\n========================"
-    puts "      #{title}"
+    puts
+    puts "========================"
+    puts Colors.heading(title.center(24))
     puts "========================"
   end
 
   def display_player(player)
-    puts "\nID: #{player.id}"
-    puts "Name: #{player.name}"
-    puts "Level: #{player.level}"
-    puts "Current XP: #{player.current_xp}"
+    puts "\n#{Colors.bold('ID:')} #{player.id}"
+    puts "#{Colors.bold('Name:')} #{player.name}"
+    puts "#{Colors.bold('Level:')} #{Colors.xp(player.level)}"
+    puts "#{Colors.bold('Current XP:')} #{Colors.xp(player.current_xp)}"
     puts "------------------------"
   end
 
@@ -168,16 +172,16 @@ class PlayerMenu
     active_count = player.quests.where(completed: false).count
     completed_count = player.quests.where(completed: true).count
 
-    puts "Active Quests: #{active_count}"
-    puts "Completed Quests: #{completed_count}"
+    puts "#{Colors.yellow('Active Quests:')} #{active_count}"
+    puts "#{Colors.green('Completed Quests:')} #{completed_count}"
     puts "------------------------"
   end
 
   def display_errors(record)
-    puts "\nUnable to save adventurer:"
+    puts "\n#{Colors.error('Unable to save adventurer:')}"
 
     record.errors.full_messages.each do |message|
-      puts "- #{message}"
+      puts Colors.red("- #{message}")
     end
   end
 end

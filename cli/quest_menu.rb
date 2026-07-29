@@ -1,3 +1,4 @@
+require_relative "colors"
 require_relative "quest_display"
 
 class QuestMenu
@@ -32,7 +33,7 @@ class QuestMenu
   def return_to_main_menu?(choice)
     return false unless choice == "9"
 
-    puts "\nReturning to the main menu..."
+    puts "\n#{Colors.warning('Returning to the main menu...')}"
     true
   end
 
@@ -42,7 +43,7 @@ class QuestMenu
     if action
       send(action)
     else
-      puts "\nInvalid choice. Please select an option from 1 to 9."
+      puts "\n#{Colors.error('Invalid choice. Please select an option from 1 to 9.')}"
     end
   end
 
@@ -53,7 +54,7 @@ class QuestMenu
     quest = player.quests.build(quest_attributes)
 
     if quest.save
-      puts "\nQuest accepted successfully!"
+      puts "\n#{Colors.success('Quest accepted successfully!')}"
       @display.quest_details(quest)
     else
       @display.errors(quest)
@@ -105,7 +106,7 @@ class QuestMenu
     return unless quest
 
     if quest.update(updated_quest_attributes(quest))
-      puts "\nQuest updated successfully!"
+      puts "\n#{Colors.success('Quest updated successfully!')}"
       @display.quest_details(quest)
     else
       @display.errors(quest)
@@ -141,7 +142,7 @@ class QuestMenu
     @display.quest_details(quest)
 
     unless confirm_action?("Complete this quest?")
-      puts "\nQuest completion canceled."
+      puts "\n#{Colors.warning('Quest completion canceled.')}"
       return
     end
 
@@ -169,7 +170,7 @@ class QuestMenu
     @display.quest_details(quest)
 
     unless confirm_action?("Abandon this quest?")
-      puts "\nQuest abandonment canceled."
+      puts "\n#{Colors.warning('Quest abandonment canceled.')}"
       return
     end
 
@@ -185,7 +186,7 @@ class QuestMenu
   end
 
   def confirm_action?(message)
-    print "\n#{message} (y/n): "
+    print "\n#{Colors.warning("#{message} (y/n): ")}"
     gets.chomp.downcase == "y"
   end
 
@@ -193,20 +194,20 @@ class QuestMenu
     players = Player.all
 
     if players.empty?
-      puts "\nNo adventurers have been created yet."
+      puts "\n#{Colors.warning('No adventurers have been created yet.')}"
       return
     end
 
-    puts "\nSelect an adventurer:"
+    puts "\n#{Colors.heading('Select an adventurer:')}"
 
     players.each do |player|
-      puts "#{player.id}. #{player.name}"
+      puts "#{Colors.cyan(player.id)}. #{player.name}"
     end
 
     print "\nEnter adventurer ID: "
     player = players.find_by(id: gets.chomp)
 
-    puts "\nAdventurer not found." unless player
+    puts "\n#{Colors.error('Adventurer not found.')}" unless player
     player
   end
 
@@ -223,7 +224,7 @@ class QuestMenu
 
   def select_quest_from(quests, quest_type)
     if quests.empty?
-      puts "\nNo #{quest_type}s found."
+      puts "\n#{Colors.warning("No #{quest_type}s found.")}"
       return
     end
 
@@ -232,7 +233,8 @@ class QuestMenu
     print "\nEnter #{quest_type} ID: "
     quest = quests.find_by(id: gets.chomp)
 
-    puts "\n#{quest_type.capitalize} not found." unless quest
+    puts "\n#{Colors.error("#{quest_type.capitalize} not found.")}" unless quest
+
     quest
   end
 end
