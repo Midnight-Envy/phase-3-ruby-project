@@ -1,6 +1,8 @@
 class QuestDisplay
   def menu
-    puts "\nQUEST MENU"
+    puts "\n========================"
+    puts "       QUEST MENU"
+    puts "========================"
     puts "1. Accept Quest"
     puts "2. View All Quests"
     puts "3. View Adventurer's Quests"
@@ -10,12 +12,12 @@ class QuestDisplay
     puts "7. Complete Quest"
     puts "8. Abandon Quest"
     puts "9. Return to Main Menu"
-    print "Choose an option: "
+    print "\nChoose an option: "
   end
 
   def quests(quests)
     if quests.empty?
-      puts "No quests found."
+      puts "\nNo quests found."
       return
     end
 
@@ -23,50 +25,99 @@ class QuestDisplay
   end
 
   def quest_choices(quests)
+    puts
+
     quests.each do |quest|
-      puts "#{quest.id}. #{quest.title}"
+      puts "#{quest.id}. #{quest.title} - #{quest.player.name}"
     end
   end
 
   def quest_details(quest)
     status = quest.completed? ? "Completed" : "Active"
 
-    puts "\n#{quest.title}"
+    puts "\n------------------------"
+    puts "Quest: #{quest.title}"
     puts "Adventurer: #{quest.player.name}"
     puts "Description: #{quest.description}"
     puts "Difficulty: #{quest.difficulty}"
     puts "XP Reward: #{quest.xp_reward}"
     puts "Status: #{status}"
+    puts "------------------------"
   end
 
   def completion(quest, player, previous_level)
-    puts "\nQuest Complete!"
+    puts "\n========================"
+    puts "     QUEST COMPLETE!"
+    puts "========================"
     puts "#{player.name} earned #{quest.xp_reward} XP."
 
     level_up(player, previous_level)
 
-    puts "Level: #{player.level}"
-    puts "Current XP: #{player.current_xp}"
+    puts "Current Level: #{player.level}"
+    puts "Total XP: #{player.current_xp}"
   end
 
   def abandonment(quest)
-    puts "\nQuest Abandoned."
+    puts "\nQuest abandoned successfully."
     puts "#{quest.title} has been removed."
     puts "No XP was awarded."
   end
 
+  def quest_log(players)
+    if players.empty?
+      puts "\nNo adventurers have been created yet."
+      return
+    end
+
+    puts "\n========================"
+    puts "       QUEST LOG"
+    puts "========================"
+
+    players.each { |player| player_quest_log(player) }
+  end
+
   def errors(record)
+    puts "\nUnable to save quest:"
+
     record.errors.full_messages.each do |message|
-      puts "Error: #{message}"
+      puts "- #{message}"
     end
   end
 
   private
 
+  def player_quest_log(player)
+    quests = player.quests
+    completed_quests, active_quests = quests.partition(&:completed?)
+
+    puts "\n#{player.name}"
+    puts "Level: #{player.level} | XP: #{player.current_xp}"
+    puts "Active: #{active_quests.count}"
+    puts "Completed: #{completed_quests.count}"
+
+    display_log_section("ACTIVE QUESTS", active_quests)
+    display_log_section("COMPLETED QUESTS", completed_quests)
+
+    puts "========================"
+  end
+
+  def display_log_section(title, quests)
+    puts "\n#{title}"
+
+    if quests.empty?
+      puts "None"
+      return
+    end
+
+    quests.each do |quest|
+      puts "- #{quest.title} | #{quest.difficulty} | #{quest.xp_reward} XP"
+    end
+  end
+
   def level_up(player, previous_level)
     return unless player.level > previous_level
 
-    puts "#{player.name} leveled up!"
+    puts "\n#{player.name} leveled up!"
     puts "Level #{previous_level} -> Level #{player.level}"
   end
 end

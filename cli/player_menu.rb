@@ -22,7 +22,7 @@ class PlayerMenu
 
   def display_menu
     puts "\n========================"
-    puts "   ADVENTURER MENU"
+    puts "    ADVENTURER MENU"
     puts "========================"
     puts "1. Create Adventurer"
     puts "2. View All Adventurers"
@@ -36,7 +36,7 @@ class PlayerMenu
   def return_to_main_menu?(choice)
     return false unless choice == "6"
 
-    puts "\nReturning to main menu..."
+    puts "\nReturning to the main menu..."
     true
   end
 
@@ -52,9 +52,7 @@ class PlayerMenu
 
   def create_player
     print "\nEnter adventurer name: "
-    name = gets.chomp
-
-    player = Player.new(name: name)
+    player = Player.new(name: gets.chomp)
 
     if player.save
       puts "\nAdventurer created successfully!"
@@ -68,39 +66,28 @@ class PlayerMenu
     players = Player.all
 
     if players.empty?
-      puts "\nNo adventurers found."
+      puts "\nNo adventurers have been created yet."
       return
     end
 
-    puts "\n========================"
-    puts "      ADVENTURERS"
-    puts "========================"
-
-    players.each do |player|
-      display_player(player)
-    end
+    display_heading("ADVENTURERS")
+    players.each { |player| display_player(player) }
   end
 
   def view_player_details
     player = select_player
-
     return unless player
 
-    puts "\n========================"
-    puts "  ADVENTURER DETAILS"
-    puts "========================"
-
+    display_heading("ADVENTURER DETAILS")
     display_player(player)
+    display_quest_summary(player)
   end
 
   def update_player
     player = select_player
-
     return unless player
 
-    puts "\nCurrent name: #{player.name}"
-    print "Enter a new name, or press Enter to keep the current name: "
-
+    print "\nName [#{player.name}]: "
     new_name = gets.chomp
     new_name = player.name if new_name.empty?
 
@@ -114,29 +101,40 @@ class PlayerMenu
 
   def delete_player
     player = select_player
-
     return unless player
 
     puts "\nYou selected:"
     display_player(player)
 
-    print "\nAre you sure you want to delete this adventurer? (y/n): "
-    confirmation = gets.chomp.downcase
+    unless confirm_action?(
+      "Delete this adventurer and all of their quests?"
+    )
+      puts "\nDeletion canceled."
+      return
+    end
 
-    if confirmation == "y"
-      player.destroy
+    destroy_player(player)
+  end
+
+  def destroy_player(player)
+    if player.destroy
       puts "\nAdventurer deleted successfully."
     else
-      puts "\nDeletion canceled."
+      display_errors(player)
     end
+  end
+
+  def confirm_action?(message)
+    print "\n#{message} (y/n): "
+    gets.chomp.downcase == "y"
   end
 
   def select_player
     players = Player.all
 
     if players.empty?
-      puts "\nNo adventurers found."
-      return nil
+      puts "\nNo adventurers have been created yet."
+      return
     end
 
     puts "\nSelect an adventurer:"
@@ -146,13 +144,16 @@ class PlayerMenu
     end
 
     print "\nEnter adventurer ID: "
-    player_id = gets.chomp
-
-    player = Player.find_by(id: player_id)
+    player = players.find_by(id: gets.chomp)
 
     puts "\nAdventurer not found." unless player
-
     player
+  end
+
+  def display_heading(title)
+    puts "\n========================"
+    puts "      #{title}"
+    puts "========================"
   end
 
   def display_player(player)
@@ -160,6 +161,15 @@ class PlayerMenu
     puts "Name: #{player.name}"
     puts "Level: #{player.level}"
     puts "Current XP: #{player.current_xp}"
+    puts "------------------------"
+  end
+
+  def display_quest_summary(player)
+    active_count = player.quests.where(completed: false).count
+    completed_count = player.quests.where(completed: true).count
+
+    puts "Active Quests: #{active_count}"
+    puts "Completed Quests: #{completed_count}"
     puts "------------------------"
   end
 
