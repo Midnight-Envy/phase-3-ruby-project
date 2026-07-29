@@ -1,7 +1,10 @@
+require_relative "colors"
+
 class QuestDisplay
   def menu
-    puts "\n========================"
-    puts "       QUEST MENU"
+    puts
+    puts "========================"
+    puts Colors.heading("       QUEST MENU")
     puts "========================"
     puts "1. Accept Quest"
     puts "2. View All Quests"
@@ -12,12 +15,12 @@ class QuestDisplay
     puts "7. Complete Quest"
     puts "8. Abandon Quest"
     puts "9. Return to Main Menu"
-    print "\nChoose an option: "
+    print "\n#{Colors.yellow('Choose an option: ')}"
   end
 
   def quests(quests)
     if quests.empty?
-      puts "\nNo quests found."
+      puts "\n#{Colors.warning('No quests found.')}"
       return
     end
 
@@ -28,59 +31,60 @@ class QuestDisplay
     puts
 
     quests.each do |quest|
-      puts "#{quest.id}. #{quest.title} - #{quest.player.name}"
+      puts "#{Colors.cyan(quest.id)}. #{quest.title} - #{quest.player.name}"
     end
   end
 
   def quest_details(quest)
-    status = quest.completed? ? "Completed" : "Active"
-
     puts "\n------------------------"
-    puts "Quest: #{quest.title}"
-    puts "Adventurer: #{quest.player.name}"
-    puts "Description: #{quest.description}"
-    puts "Difficulty: #{quest.difficulty}"
-    puts "XP Reward: #{quest.xp_reward}"
-    puts "Status: #{status}"
+    puts "#{Colors.bold('Quest:')} #{Colors.heading(quest.title)}"
+    puts "#{Colors.bold('Adventurer:')} #{quest.player.name}"
+    puts "#{Colors.bold('Description:')} #{quest.description}"
+    puts "#{Colors.bold('Difficulty:')} #{Colors.difficulty(quest.difficulty)}"
+    puts "#{Colors.bold('XP Reward:')} #{Colors.xp("#{quest.xp_reward} XP")}"
+    puts "#{Colors.bold('Status:')} #{Colors.status(quest.completed?)}"
     puts "------------------------"
   end
 
   def completion(quest, player, previous_level)
-    puts "\n========================"
-    puts "     QUEST COMPLETE!"
-    puts "========================"
-    puts "#{player.name} earned #{quest.xp_reward} XP."
+    puts
+    puts Colors.bright_green("========================")
+    puts Colors.bold(Colors.bright_green("     QUEST COMPLETE!"))
+    puts Colors.bright_green("========================")
+    puts Colors.success(quest.title)
+    puts "#{player.name} earned #{Colors.xp("+#{quest.xp_reward} XP")}."
 
     level_up(player, previous_level)
 
-    puts "Current Level: #{player.level}"
-    puts "Total XP: #{player.current_xp}"
+    puts "#{Colors.bold('Current Level:')} #{Colors.xp(player.level)}"
+    puts "#{Colors.bold('Total XP:')} #{Colors.xp(player.current_xp)}"
   end
 
   def abandonment(quest)
-    puts "\nQuest abandoned successfully."
+    puts "\n#{Colors.warning('Quest abandoned successfully.')}"
     puts "#{quest.title} has been removed."
-    puts "No XP was awarded."
+    puts Colors.yellow("No XP was awarded.")
   end
 
   def quest_log(players)
     if players.empty?
-      puts "\nNo adventurers have been created yet."
+      puts "\n#{Colors.warning('No adventurers have been created yet.')}"
       return
     end
 
-    puts "\n========================"
-    puts "       QUEST LOG"
+    puts
+    puts "========================"
+    puts Colors.heading("       QUEST LOG")
     puts "========================"
 
     players.each { |player| player_quest_log(player) }
   end
 
   def errors(record)
-    puts "\nUnable to save quest:"
+    puts "\n#{Colors.error('Unable to save quest:')}"
 
     record.errors.full_messages.each do |message|
-      puts "- #{message}"
+      puts Colors.red("- #{message}")
     end
   end
 
@@ -90,10 +94,11 @@ class QuestDisplay
     quests = player.quests
     completed_quests, active_quests = quests.partition(&:completed?)
 
-    puts "\n#{player.name}"
-    puts "Level: #{player.level} | XP: #{player.current_xp}"
-    puts "Active: #{active_quests.count}"
-    puts "Completed: #{completed_quests.count}"
+    puts "\n#{Colors.heading(player.name)}"
+    puts "#{Colors.bold('Level:')} #{Colors.xp(player.level)} | " \
+         "#{Colors.bold('XP:')} #{Colors.xp(player.current_xp)}"
+    puts "#{Colors.yellow('Active:')} #{active_quests.count}"
+    puts "#{Colors.green('Completed:')} #{completed_quests.count}"
 
     display_log_section("ACTIVE QUESTS", active_quests)
     display_log_section("COMPLETED QUESTS", completed_quests)
@@ -102,22 +107,28 @@ class QuestDisplay
   end
 
   def display_log_section(title, quests)
-    puts "\n#{title}"
+    puts "\n#{Colors.heading(title)}"
 
     if quests.empty?
-      puts "None"
+      puts Colors.warning("None")
       return
     end
 
     quests.each do |quest|
-      puts "- #{quest.title} | #{quest.difficulty} | #{quest.xp_reward} XP"
+      difficulty = Colors.difficulty(quest.difficulty)
+      reward = Colors.xp("#{quest.xp_reward} XP")
+
+      puts "- #{quest.title} | #{difficulty} | #{reward}"
     end
   end
 
   def level_up(player, previous_level)
     return unless player.level > previous_level
 
-    puts "\n#{player.name} leveled up!"
+    puts
+    puts Colors.bold(Colors.bright_magenta("★ LEVEL UP! ★"))
+    puts "#{player.name} reached " \
+         "#{Colors.xp("Level #{player.level}")}!"
     puts "Level #{previous_level} -> Level #{player.level}"
   end
 end
