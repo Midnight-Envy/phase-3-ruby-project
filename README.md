@@ -88,7 +88,7 @@ git clone <repository-url>
 Navigate into the project.
 
 ```bash
-cd questcli
+cd phase-3-ruby-project
 ```
 
 Install dependencies.
