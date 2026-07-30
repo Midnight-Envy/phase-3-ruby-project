@@ -165,7 +165,38 @@ The goal is to create a simple but engaging CLI experience that demonstrates CRU
 
 ---
 
+## Feature 9 - Index-Based Record Selection
 
+**User Story:** As a user, I want players and quests displayed as consecutive numbered choices so that record selection is clear even when database records have been deleted.
+
+### Details
+
+- Display players using consecutive list numbers beginning at 1.
+- Display quests using consecutive list numbers beginning at 1.
+- Allow the user to select a player by its displayed list number.
+- Allow the user to select a quest by its displayed list number.
+- Keep database IDs hidden from normal CLI selection.
+- Continue using Active Record records internally.
+- Handle selections outside the displayed range without crashing.
+- Apply index-based selection consistently throughout the player and quest menus.
+
+---
+
+## Feature 10 - Seeded Starter Adventure
+
+**User Story:** As a reviewer, I want the database to contain starter content so that I can immediately explore the application without manually creating every record.
+
+### Details
+
+- Seed at least one sample adventurer.
+- Seed multiple quests belonging to the sample adventurer.
+- Include easy, medium, and hard quests.
+- Give every seeded quest a title, description, difficulty, XP reward, and active status.
+- Ensure seeded records satisfy all model validations.
+- Allow the reviewer to view, update, complete, and abandon seeded quests.
+- Prevent repeated seeding from creating uncontrolled duplicate records.
+
+---
 
 # Quest Lifecycle
 
@@ -425,7 +456,7 @@ These features are not required for the MVP:
 
 These user stories describe optional features that expand QuestCLI into a more complete playable RPG experience.
 
-## Feature 9 - Character Classes
+## Feature 11 - Character Classes
 
 **User Story:** As a player, I want my adventurer to specialize into a character class so that the adventurer has a distinct identity and progression path.
 
@@ -438,7 +469,7 @@ These user stories describe optional features that expand QuestCLI into a more c
 - The adventurer's class appears in their details.
 - Existing adventurers remain valid before selecting a class.
 
-## Feature 10 - Gold Rewards
+## Feature 12 - Gold Rewards
 
 **User Story:** As a player, I want quests to reward gold so that I can purchase useful items.
 
@@ -450,7 +481,7 @@ These user stories describe optional features that expand QuestCLI into a more c
 - Gold is awarded only once per quest.
 - The player's current gold appears in their details.
 
-## Feature 11 - Quest Item Rewards
+## Feature 13 - Quest Item Rewards
 
 **User Story:** As a player, I want quests to reward items so that completing adventures can unlock tools and valuable objects.
 
@@ -462,7 +493,7 @@ These user stories describe optional features that expand QuestCLI into a more c
 - The CLI displays the items earned.
 - The same reward is not granted more than once.
 
-## Feature 12 - Adventurer Inventory
+## Feature 14 - Adventurer Inventory
 
 **User Story:** As a player, I want my adventurer to have an inventory so that I can collect, view, and use items.
 
@@ -474,7 +505,7 @@ These user stories describe optional features that expand QuestCLI into a more c
 - Purchased and rewarded items are added to inventory.
 - Empty inventories display a clear message.
 
-## Feature 13 - Quest Prerequisites
+## Feature 15 - Quest Prerequisites
 
 **User Story:** As a player, I want quests to have prerequisites so that progression feels meaningful and advanced quests must be earned.
 
@@ -487,7 +518,7 @@ These user stories describe optional features that expand QuestCLI into a more c
 - The player cannot begin an unavailable quest.
 - The CLI explains every unmet prerequisite.
 
-## Feature 14 - Item Store
+## Feature 16 - Item Store
 
 **User Story:** As a player, I want to purchase items from a store so that I can prepare for future quests.
 
@@ -501,7 +532,7 @@ These user stories describe optional features that expand QuestCLI into a more c
 - Players cannot purchase items they cannot afford.
 - Invalid purchases display a clear error.
 
-## Feature 15 - Interactive Quest Steps
+## Feature 17 - Interactive Quest Steps
 
 **User Story:** As a player, I want quests to contain interactive steps so that completing a quest feels like playing an adventure instead of selecting a single menu option.
 
@@ -515,7 +546,7 @@ These user stories describe optional features that expand QuestCLI into a more c
 - The quest completes only after all required steps are finished.
 - Rewards are granted after the final step.
 
-## Feature 16 - Difficulty-Based Quest Depth
+## Feature 18 - Difficulty-Based Quest Depth
 
 **User Story:** As a player, I want harder quests to contain more challenging and longer interactions so that difficulty affects gameplay rather than only rewards.
 
@@ -527,7 +558,7 @@ These user stories describe optional features that expand QuestCLI into a more c
 - Difficulty affects XP, gold, and possible item rewards.
 - The CLI clearly displays quest difficulty.
 
-## Feature 17 - Seeded Adventure
+## Feature 19 - Seeded Adventure
 
 **User Story:** As a new player, I want the game to include a complete seeded adventure so that I can create an adventurer and begin playing immediately.
 
