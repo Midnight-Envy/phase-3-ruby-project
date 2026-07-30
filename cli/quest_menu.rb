@@ -191,7 +191,7 @@ class QuestMenu
   end
 
   def select_player
-    players = Player.all
+    players = Player.all.to_a
 
     if players.empty?
       puts "\n#{Colors.warning('No adventurers have been created yet.')}"
@@ -200,15 +200,16 @@ class QuestMenu
 
     puts "\n#{Colors.heading('Select an adventurer:')}"
 
-    players.each do |player|
-      puts "#{Colors.cyan(player.id)}. #{player.name}"
+    players.each_with_index do |player, index|
+      puts "#{Colors.cyan(index + 1)}. #{player.name}"
     end
 
-    print "\nEnter adventurer ID: "
-    player = players.find_by(id: gets.chomp)
+    print "\nEnter adventurer number: "
+    selected_player = record_at_index(players, gets.chomp)
 
-    puts "\n#{Colors.error('Adventurer not found.')}" unless player
-    player
+    puts "\n#{Colors.error('Adventurer not found.')}" unless selected_player
+
+    selected_player
   end
 
   def select_quest
@@ -223,6 +224,8 @@ class QuestMenu
   end
 
   def select_quest_from(quests, quest_type)
+    quests = quests.to_a
+
     if quests.empty?
       puts "\n#{Colors.warning("No #{quest_type}s found.")}"
       return
@@ -230,11 +233,20 @@ class QuestMenu
 
     @display.quest_choices(quests)
 
-    print "\nEnter #{quest_type} ID: "
-    quest = quests.find_by(id: gets.chomp)
+    print "\nEnter #{quest_type} number: "
+    selected_quest = record_at_index(quests, gets.chomp)
 
-    puts "\n#{Colors.error("#{quest_type.capitalize} not found.")}" unless quest
+    puts "\n#{Colors.error("#{quest_type.capitalize} not found.")}" unless selected_quest
 
-    quest
+    selected_quest
+  end
+
+  def record_at_index(records, input)
+    index = input.to_i - 1
+
+    return if index.negative?
+    return if index >= records.length
+
+    records[index]
   end
 end

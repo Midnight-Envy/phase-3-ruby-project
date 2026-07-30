@@ -19,24 +19,33 @@ class QuestDisplay
   end
 
   def quests(quests)
+    quests = quests.to_a
+
     if quests.empty?
       puts "\n#{Colors.warning('No quests found.')}"
       return
     end
 
-    quests.each { |quest| quest_details(quest) }
+    quests.each_with_index do |quest, index|
+      quest_details(quest, index + 1)
+    end
   end
 
   def quest_choices(quests)
     puts
 
-    quests.each do |quest|
-      puts "#{Colors.cyan(quest.id)}. #{quest.title} - #{quest.player.name}"
+    quests.each_with_index do |quest, index|
+      number = Colors.cyan(index + 1)
+
+      puts "#{number}. #{quest.title} - #{quest.player.name}"
     end
   end
 
-  def quest_details(quest)
+  def quest_details(quest, number = nil)
     puts "\n------------------------"
+
+    puts "#{Colors.bold('Quest Number:')} #{number}" if number
+
     puts "#{Colors.bold('Quest:')} #{Colors.heading(quest.title)}"
     puts "#{Colors.bold('Adventurer:')} #{quest.player.name}"
     puts "#{Colors.bold('Description:')} #{quest.description}"
@@ -114,11 +123,11 @@ class QuestDisplay
       return
     end
 
-    quests.each do |quest|
+    quests.each_with_index do |quest, index|
       difficulty = Colors.difficulty(quest.difficulty)
       reward = Colors.xp("#{quest.xp_reward} XP")
 
-      puts "- #{quest.title} | #{difficulty} | #{reward}"
+      puts "#{index + 1}. #{quest.title} | #{difficulty} | #{reward}"
     end
   end
 

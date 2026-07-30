@@ -66,7 +66,7 @@ class PlayerMenu
   end
 
   def view_all_players
-    players = Player.all
+    players = Player.all.to_a
 
     if players.empty?
       puts "\n#{Colors.warning('No adventurers have been created yet.')}"
@@ -74,7 +74,11 @@ class PlayerMenu
     end
 
     display_heading("ADVENTURERS")
-    players.each { |player| display_player(player) }
+
+    players.each_with_index do |player, index|
+      puts "\n#{Colors.heading("#{index + 1}. #{player.name}")}"
+      display_player(player, show_name: false)
+    end
   end
 
   def view_player_details
@@ -133,7 +137,7 @@ class PlayerMenu
   end
 
   def select_player
-    players = Player.all
+    players = Player.all.to_a
 
     if players.empty?
       puts "\n#{Colors.warning('No adventurers have been created yet.')}"
@@ -142,15 +146,25 @@ class PlayerMenu
 
     puts "\n#{Colors.heading('Select an adventurer:')}"
 
-    players.each do |player|
-      puts "#{Colors.cyan(player.id)}. #{player.name}"
+    players.each_with_index do |player, index|
+      puts "#{Colors.cyan(index + 1)}. #{player.name}"
     end
 
-    print "\nEnter adventurer ID: "
-    player = players.find_by(id: gets.chomp)
+    print "\nEnter adventurer number: "
+    selected_player = record_at_index(players, gets.chomp)
 
-    puts "\n#{Colors.error('Adventurer not found.')}" unless player
-    player
+    puts "\n#{Colors.error('Adventurer not found.')}" unless selected_player
+
+    selected_player
+  end
+
+  def record_at_index(records, input)
+    index = input.to_i - 1
+
+    return if index.negative?
+    return if index >= records.length
+
+    records[index]
   end
 
   def display_heading(title)
@@ -160,9 +174,8 @@ class PlayerMenu
     puts "========================"
   end
 
-  def display_player(player)
-    puts "\n#{Colors.bold('ID:')} #{player.id}"
-    puts "#{Colors.bold('Name:')} #{player.name}"
+  def display_player(player, show_name: true)
+    puts "\n#{Colors.bold('Name:')} #{player.name}" if show_name
     puts "#{Colors.bold('Level:')} #{Colors.xp(player.level)}"
     puts "#{Colors.bold('Current XP:')} #{Colors.xp(player.current_xp)}"
     puts "------------------------"
