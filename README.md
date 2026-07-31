@@ -85,7 +85,7 @@ Clone the repository.
 git clone <repository-url>
 ```
 
-Navigate into the project.
+Navigate into the project directory.
 
 ```bash
 cd phase-3-ruby-project
@@ -109,7 +109,7 @@ Run the migrations.
 bundle exec rake db:migrate
 ```
 
-(Optional) Seed the database.
+Seed the database with sample adventurers and quests (recommended).
 
 ```bash
 bundle exec rake seed
@@ -121,6 +121,19 @@ Start the application.
 ruby cli/main.rb
 ```
 
+---
+
+# Requirements
+
+- Ruby 3.3+
+- Bundler
+- SQLite3
+
+---
+
+# Seed Data
+
+The included seed file creates sample adventurers and quests so reviewers can immediately explore the application's features without manually creating records.
 ---
 
 # Example Gameplay
